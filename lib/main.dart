@@ -1,36 +1,68 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'home_Screen.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'dart:async';
 
-void main() async {
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:note_app/base_presentation/theme/theme.dart';
+import 'package:note_app/util/app_life_cycle_mixin.dart';
+import 'package:note_app/util/navigator/app_navigator.dart';
+import 'package:note_app/util/navigator/app_page.dart';
+
+import 'main_setting/app_setting.dart';
+
+class AppLocale {
+  final List<Locale> supportedLocales = [
+    const Locale('ar', 'EG'),
+    const Locale('en', 'US'),
+    const Locale('es', 'ES'),
+    const Locale('hi', 'IN'),
+    const Locale('ja', 'JP'),
+    const Locale('pt', 'BR'),
+    const Locale('vi', 'VN'),
+    const Locale('zh', 'CN'),
+  ];
+
+  Locale get defaultLocale => const Locale('en', 'US');
+
+  String get path => 'assets/translations';
+}
+
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  try {
-    // Lấy đường dẫn thư mục ứng dụng để lưu trữ dữ liệu của Hive
-    Directory appDocumentDirectory = await getApplicationDocumentsDirectory();
+  await AppSetting().initApp();
 
-    // Truyền đường dẫn thư mục ứng dụng vào Hive.init()
-    Hive.init(appDocumentDirectory.path);
+  final AppLocale appLocale = AppLocale();
 
-    await Hive.openBox('Notes_box');
-  } catch (e) {
-    // ignore: avoid_print
-    print('Error initializing Hive: $e');
-  }
-
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Homescreen(),
+    AppTheme.initFromRootContext(context);
+    return ListenableBuilder(
+      listenable: AppTheme.instance,
+      builder: (context, _) {
+        return MaterialApp(
+          themeMode: AppTheme.instance.mode,
+          theme: ThemeData.dark(),
+          debugShowCheckedModeBanner: false,
+          // theme: ThemeData(
+          //   useMaterial3: true,
+          // ),
+          // darkTheme: ThemeData(
+          //   useMaterial3: true,
+          // ),
+          home: GetHomePage().getPage(null),
+          navigatorKey: AppNavigator.navigatorKey,
+          navigatorObservers: [
+            AppLifeCycleMixin.routeObserver,
+          ],
+        );
+      },
     );
   }
 }
