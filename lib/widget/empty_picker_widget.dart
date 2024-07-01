@@ -29,11 +29,10 @@ class EmptyPickerWidget extends StatelessWidget {
                 size: 200,
               ),
               const SizedBox(height: 16),
-              Text(
-                canPickMultipleFile
-                    ? ConvertPageLocalization.tapToSelectFiles
-                    : ConvertPageLocalization.tapToSelectFiles,
-              ),
+              Text("canPickMultipleFile"
+                  // ? ConvertPageLocalization.tapToSelectFiles
+                  // : ConvertPageLocalization.tapToSelectFiles,
+                  ),
             ],
           ),
         ),
