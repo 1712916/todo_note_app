@@ -9,7 +9,7 @@ class IsarDatabase extends Database {
     return Isar.initializeIsarCore().whenComplete(() {
       return getApplicationDocumentsDirectory().then(
         (dir) {
-          Isar.open(
+          return Isar.open(
             [
               NoteGroupCollectionSchema,
               NoteCollectionSchema,

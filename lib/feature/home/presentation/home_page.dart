@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/base_presentation/page/base_page.dart';
 import 'package:note_app/base_presentation/view/view.dart';
-import 'package:note_app/feature/home/mock_data.dart';
+
 import 'package:note_app/feature/home/widget/group_note_card_list.dart';
 import 'package:note_app/feature/home/widget/note_group_card.dart';
 import 'package:note_app/feature/home/widget/note_group_list_widget.dart';

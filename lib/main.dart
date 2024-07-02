@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
 import 'package:note_app/base_presentation/theme/theme.dart';
 import 'package:note_app/data/collection/note_collection.dart';
@@ -10,8 +11,10 @@ import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/data/observer_data.dart';
 import 'package:note_app/data/observer_data/note_observer_data.dart';
 import 'package:note_app/data/observer_data/note_observer_data_impl.dart';
+import 'package:note_app/data/repository/note_repository_impl.dart';
 import 'package:note_app/database/database.dart';
 import 'package:note_app/database/isar_database.dart';
+import 'package:note_app/feature/home/bloc/group_bloc.dart';
 import 'package:note_app/util/app_life_cycle_mixin.dart';
 import 'package:note_app/util/navigator/app_navigator.dart';
 import 'package:note_app/util/navigator/app_page.dart';
@@ -53,32 +56,56 @@ Future main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final isar = Isar.getInstance();
+  @override
+  void initState() {
+    super.initState();
+
+    print('isar: ${isar}');
+  }
+
   @override
   Widget build(BuildContext context) {
     AppTheme.initFromRootContext(context);
-    return ListenableBuilder(
-      listenable: AppTheme.instance,
-      builder: (context, _) {
-        return MaterialApp(
-          themeMode: AppTheme.instance.mode,
-          theme: ThemeData.light(),
-          debugShowCheckedModeBanner: false,
-          // theme: ThemeData(
-          //   useMaterial3: true,
-          // ),
-          // darkTheme: ThemeData(
-          //   useMaterial3: true,
-          // ),
-          home: GetHomePage().getPage(null),
-          // home: HomeTestDatabase(),
-          navigatorKey: AppNavigator.navigatorKey,
-          navigatorObservers: [
-            AppLifeCycleMixin.routeObserver,
-          ],
-        );
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ListNoteGroupCubit(
+            groupRepository: NoteGroupRepositoryImpl(isar: isar!),
+            groupObserverData: NoteGroupObserverDataIsarImpl(),
+          ),
+        ),
+      ],
+      child: ListenableBuilder(
+        listenable: AppTheme.instance,
+        builder: (context, _) {
+          return MaterialApp(
+            themeMode: AppTheme.instance.mode,
+            theme: ThemeData.light(),
+            debugShowCheckedModeBanner: false,
+            // theme: ThemeData(
+            //   useMaterial3: true,
+            // ),
+            // darkTheme: ThemeData(
+            //   useMaterial3: true,
+            // ),
+            home: GetHomePage().getPage(null),
+            // home: HomeTestDatabase(),
+            navigatorKey: AppNavigator.navigatorKey,
+            navigatorObservers: [
+              AppLifeCycleMixin.routeObserver,
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -100,8 +127,6 @@ class _HomeTestDatabaseState extends State<HomeTestDatabase> {
   final NoteGroupObserverData _noteGroupObserver = NoteGroupObserverDataIsarImpl();
 
   Future init() async {
-    await _noteGroupObserver.initialize();
-
     _noteGroupObserver.listener(
       (value) {
         g = value;

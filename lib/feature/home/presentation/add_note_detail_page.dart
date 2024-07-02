@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/base_presentation/page/base_page.dart';
 import 'package:note_app/data/entity/note_entity.dart';
-import 'package:note_app/feature/home/mock_data.dart';
+
 import 'package:note_app/util/navigator/app_navigator.dart';
 import 'package:note_app/util/theme_util.dart';
 import 'package:note_app/widget/custom_text_field.dart';
@@ -88,24 +88,7 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
                           return Container(
                             alignment: Alignment.center,
                             child: ElevatedButton(
-                                onPressed: _controller.text.isEmpty
-                                    ? null
-                                    : () {
-                                        addNote(
-                                          NoteEntity(
-                                            id: mockNotes.length + 1,
-                                            groupId: group!.id,
-                                            description: _controller.text.trim(),
-                                            isDone: false,
-                                            isDeleted: false,
-                                            date: null,
-                                            updatedDateTime: DateTime.now(),
-                                            attachments: null,
-                                          ),
-                                        );
-                                        AppNavigator.back();
-                                      },
-                                child: Text('Save Note')),
+                                onPressed: _controller.text.isEmpty ? null : () {}, child: Text('Save Note')),
                           );
                         },
                       ),

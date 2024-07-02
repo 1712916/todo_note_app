@@ -10,24 +10,25 @@ class ListNoteGroupMapping extends Mapping<List<NoteGroupCollection>, List<NoteG
   factory ListNoteGroupMapping() => _i;
 
   @override
-  List<NoteGroupEntity> from(List<NoteGroupCollection> input) {
-    return input.map(NoteGroupMapping().from).toList();
+  List<NoteGroupEntity> to(List<NoteGroupCollection> input) {
+    return input.map(NoteGroupCollectionToEntityMapping().to).toList();
   }
 }
 
-class NoteGroupMapping extends Mapping<NoteGroupCollection, NoteGroupEntity> {
-  NoteGroupMapping._();
+class NoteGroupCollectionToEntityMapping extends Mapping<NoteGroupCollection, NoteGroupEntity> {
+  NoteGroupCollectionToEntityMapping._();
 
-  static final NoteGroupMapping _i = NoteGroupMapping._();
+  static final NoteGroupCollectionToEntityMapping _i = NoteGroupCollectionToEntityMapping._();
 
-  factory NoteGroupMapping() => _i;
+  factory NoteGroupCollectionToEntityMapping() => _i;
 
   @override
-  NoteGroupEntity from(NoteGroupCollection input) {
+  NoteGroupEntity to(NoteGroupCollection input) {
     return NoteGroupEntity(
       id: input.id,
       name: input.name,
       updatedDateTime: input.updatedDateTime,
+      isDeleted: input.isDeleted,
     );
   }
 }
@@ -40,13 +41,13 @@ class NoteMapping extends Mapping<NoteCollection, NoteEntity> {
   factory NoteMapping() => _i;
 
   @override
-  NoteEntity from(NoteCollection input) {
+  NoteEntity to(NoteCollection input) {
     return NoteEntity(
       id: input.id,
       description: input.description,
       updatedDateTime: input.updatedDateTime,
       isDone: input.isDone,
-      attachments: input.attachments?.map(AttachmentMapping().from).toList(),
+      attachments: input.attachments?.map(AttachmentMapping().to).toList(),
       date: input.date,
       groupId: input.groupId,
       isDeleted: input.isDeleted,
@@ -61,7 +62,7 @@ class AttachmentMapping extends Mapping<AttachmentCollection, AttachmentEntity> 
 
   factory AttachmentMapping() => _i;
   @override
-  AttachmentEntity from(AttachmentCollection input) {
+  AttachmentEntity to(AttachmentCollection input) {
     return AttachmentEntity(path: input.path);
   }
 }

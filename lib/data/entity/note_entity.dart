@@ -10,6 +10,7 @@
 * */
 
 import 'package:equatable/equatable.dart';
+import 'package:note_app/data/repository/note_repository_impl.dart';
 
 class NoteEntity extends Equatable {
   final int? id;
@@ -79,15 +80,17 @@ class AttachmentEntity extends Equatable {
   List<Object?> get props => [path];
 }
 
-class NoteGroupEntity extends Equatable {
+class NoteGroupEntity extends Equatable implements GetId<int> {
   final int? id;
   final String? name;
   final DateTime? updatedDateTime;
+  final bool? isDeleted;
 
   const NoteGroupEntity({
-    required this.id,
-    required this.name,
-    required this.updatedDateTime,
+    this.id,
+    this.name,
+    this.updatedDateTime,
+    this.isDeleted,
   });
 
   @override
@@ -95,17 +98,23 @@ class NoteGroupEntity extends Equatable {
         id,
         name,
         updatedDateTime,
+        isDeleted,
       ];
 
   NoteGroupEntity copyWith({
     int? id,
     String? name,
     DateTime? updatedDateTime,
+    bool? isDeleted,
   }) {
     return NoteGroupEntity(
       id: id ?? this.id,
       name: name ?? this.name,
       updatedDateTime: updatedDateTime ?? this.updatedDateTime,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
+
+  @override
+  int? get getId => id;
 }

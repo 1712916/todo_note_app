@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/base_presentation/page/base_page.dart';
 import 'package:note_app/data/entity/note_entity.dart';
-import 'package:note_app/feature/home/mock_data.dart';
+
 import 'package:note_app/feature/home/presentation/add_note_detail_page.dart';
 import 'package:note_app/feature/home/widget/note_check_widget.dart';
 
@@ -19,7 +19,6 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
   @override
   void initState() {
     super.initState();
-    notes = mockNotes;
   }
 
   @override
@@ -40,10 +39,7 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
             .map(
               (e) => NoteCheckWidget(
                 note: e,
-                onCheckChanged: (value) {
-                  updateNote(e.copyWith(isDone: value));
-                  setState(() {});
-                },
+                onCheckChanged: (value) {},
               ),
             ),
       ],

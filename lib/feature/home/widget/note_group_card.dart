@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/data/entity/note_entity.dart';
-import 'package:note_app/feature/home/mock_data.dart';
+
 import 'package:note_app/util/navigator/app_navigator.dart';
 import 'package:note_app/util/navigator/app_page.dart';
 
@@ -14,11 +14,7 @@ class NoteGroupCard extends StatefulWidget {
 }
 
 class _NoteGroupCardState extends State<NoteGroupCard> {
-  List<NoteEntity> get notes => mockNotes
-      .where(
-        (e) => e.groupId == widget.group.id,
-      )
-      .toList();
+  List<NoteEntity> get notes => [];
 
   @override
   void initState() {

@@ -6,3 +6,9 @@ abstract class CrudRepository<T, Id> {
   Future<T> update(T item);
   Future<bool> delete(T item);
 }
+
+abstract class CrudException implements Exception {}
+
+class NotFoundException extends CrudException {}
+
+class CreateErrorException extends CrudException {}
