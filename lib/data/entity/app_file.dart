@@ -6,7 +6,7 @@ class AppFile extends Equatable {
   final String name;
   final String path;
 
-  AppFile({required this.name, required this.path});
+  const AppFile({required this.name, required this.path});
 
   Map<String, dynamic> toJson() {
     return {

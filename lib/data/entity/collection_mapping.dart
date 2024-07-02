@@ -1,4 +1,5 @@
 import 'package:note_app/data/collection/note_collection.dart';
+import 'package:note_app/data/entity/app_file.dart';
 import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/data/mapping_util.dart';
 
@@ -63,6 +64,6 @@ class AttachmentMapping extends Mapping<AttachmentCollection, AttachmentEntity> 
   factory AttachmentMapping() => _i;
   @override
   AttachmentEntity to(AttachmentCollection input) {
-    return AttachmentEntity(path: input.path);
+    return AttachmentEntity(file: AppFile(path: input.path ?? '', name: input.name ?? ''));
   }
 }

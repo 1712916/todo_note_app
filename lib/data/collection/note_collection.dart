@@ -26,4 +26,5 @@ class NoteCollection {
 @embedded
 class AttachmentCollection {
   String? path;
+  String? name;
 }

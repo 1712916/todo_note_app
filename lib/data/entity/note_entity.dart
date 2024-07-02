@@ -10,6 +10,7 @@
 * */
 
 import 'package:equatable/equatable.dart';
+import 'package:note_app/data/entity/app_file.dart';
 import 'package:note_app/data/repository/note_repository_impl.dart';
 
 class NoteEntity extends Equatable {
@@ -72,12 +73,12 @@ class NoteEntity extends Equatable {
 
 //Lưu thông tin đính kèm
 class AttachmentEntity extends Equatable {
-  final String? path;
+  final AppFile? file;
 
-  AttachmentEntity({required this.path});
+  AttachmentEntity({required this.file});
 
   @override
-  List<Object?> get props => [path];
+  List<Object?> get props => [file];
 }
 
 class NoteGroupEntity extends Equatable implements GetId<int> {

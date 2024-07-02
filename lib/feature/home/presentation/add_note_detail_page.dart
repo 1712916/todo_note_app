@@ -1,14 +1,16 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:note_app/base_presentation/page/base_page.dart';
+import 'package:note_app/data/entity/app_file.dart';
 import 'package:note_app/data/entity/note_entity.dart';
-
-import 'package:note_app/util/navigator/app_navigator.dart';
 import 'package:note_app/util/theme_util.dart';
-import 'package:note_app/widget/custom_text_field.dart';
+import 'package:note_app/widget/file_picker.dart';
 import 'package:note_app/widget/show_bottom_sheet.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 
-class AddNoteDetailPage extends StatefulWidget with ShowBottomSheet {
-  const AddNoteDetailPage({Key? key, this.initNoteGroup}) : super(key: key);
+class AddNoteDetailPage extends StatefulWidget with ShowBottomSheet<NoteEntity> {
+  const AddNoteDetailPage({super.key, this.initNoteGroup});
 
   final NoteGroupEntity? initNoteGroup;
 
@@ -18,7 +20,19 @@ class AddNoteDetailPage extends StatefulWidget with ShowBottomSheet {
 
 class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with ThemeUtil {
   final TextEditingController _controller = TextEditingController();
+
+  bool get haveText => _controller.text.trim().isNotEmpty;
+
   NoteGroupEntity? group;
+
+  DateTime? date;
+
+  Set<AppFile> files = HashSet(
+    equals: (p0, p1) {
+      return p0.name == p1.name;
+    },
+    hashCode: (p0) => p0.name.hashCode,
+  );
 
   @override
   void initState() {
@@ -33,99 +47,122 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
 
   @override
   Widget buildBody(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                BackButton(),
-                const SizedBox(width: 16),
-                Center(
-                    child: Text(
-                  'Add Note',
-                  style: theme.textTheme.titleLarge,
-                )),
-              ],
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: TextField(
+            controller: _controller,
+            decoration: const InputDecoration.collapsed(hintText: 'Input new group'),
+            autofocus: true,
           ),
-          Divider(
-            height: 1,
-          ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        const SizedBox(height: 4),
+        Flexible(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Align(
+              alignment: Alignment.centerLeft,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Title',
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  CustomTextField(
-                    maxLines: 4,
-                    controller: _controller,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        'Group: ',
-                        style: theme.textTheme.titleMedium,
+                  if (date != null)
+                    InputChip(
+                      label: Text(date!.toString().split(' ').first),
+                      onPressed: _showDatePicker,
+                      deleteIcon: const Icon(
+                        Icons.close_rounded,
+                        size: 18,
                       ),
-                      const SizedBox(width: 4),
-                      if (group != null)
-                        Chip(label: Text(group!.name ?? ''))
-                      else
-                        TextButton(onPressed: () {}, child: Text('Add group')),
-                      Spacer(),
-                      AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return Container(
-                            alignment: Alignment.center,
-                            child: ElevatedButton(
-                                onPressed: _controller.text.isEmpty ? null : () {}, child: Text('Save Note')),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                  Row(
-                    children: [
-                      IconButton(onPressed: () {}, icon: Icon(Icons.calendar_month_outlined)),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.attach_file_outlined)),
-                    ],
-                  ),
+                      onDeleted: () {
+                        date = null;
+                        setState(() {});
+                      },
+                    ),
+                  if (files.isNotEmpty)
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        ...files.map(
+                          (e) {
+                            return InputChip(
+                              label: Text(e.name),
+                              onPressed: () {
+                                OpenFile.open(e.path);
+                              },
+                              deleteIcon: const Icon(
+                                Icons.close_rounded,
+                                size: 18,
+                              ),
+                              onDeleted: () {
+                                files.remove(e);
+                                setState(() {});
+                              },
+                            );
+                          },
+                        )
+                      ],
+                    ),
                 ],
               ),
             ),
           ),
-        ],
-      ),
-    );
-    return ListView(
-      padding: EdgeInsets.all(16),
-      children: [
-        Text(
-          'Title',
-          style: theme.textTheme.headlineSmall,
         ),
-        const SizedBox(height: 8),
-        CustomTextField(
-          maxLines: 4,
-          controller: _controller,
-        ),
-        const SizedBox(height: 8),
-        AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return ElevatedButton(onPressed: _controller.text.isEmpty ? null : () {}, child: Text('Save Group'));
-          },
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              IconButton(onPressed: _showDatePicker, icon: const Icon(Icons.calendar_month_outlined)),
+              IconButton(
+                  onPressed: () {
+                    const AnyFilePicker(
+                      allowMultiple: true,
+                    ).opeFilePicker().then(
+                      (selectedFiles) {
+                        if (selectedFiles != null) {
+                          files.addAll(selectedFiles);
+                          setState(() {});
+                        }
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.attach_file_outlined)),
+              const Spacer(),
+              AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Container(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      onPressed: !haveText
+                          ? null
+                          : () {
+                              Navigator.of(context).pop(
+                                NoteEntity(
+                                  id: null,
+                                  isDone: null,
+                                  isDeleted: null,
+                                  updatedDateTime: null,
+                                  groupId: group?.id,
+                                  description: _controller.text.trim(),
+                                  date: date,
+                                  attachments: files.map((e) => AttachmentEntity(file: e)).toList(),
+                                ),
+                              );
+                            },
+                      icon: Text(
+                        'Save',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: haveText ? null : theme.disabledColor,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         )
       ],
     );
@@ -135,5 +172,21 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _showDatePicker() {
+    showDatePicker(
+      context: context,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(3000),
+      initialDate: date ?? DateTime.now(),
+    ).then(
+      (selectedDate) {
+        if (selectedDate != null) {
+          date = selectedDate;
+          setState(() {});
+        }
+      },
+    );
   }
 }
