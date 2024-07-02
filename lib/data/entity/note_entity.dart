@@ -71,8 +71,12 @@ class NoteEntity extends Equatable {
 
 //Lưu thông tin đính kèm
 class AttachmentEntity extends Equatable {
+  final String? path;
+
+  AttachmentEntity({required this.path});
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [path];
 }
 
 class NoteGroupEntity extends Equatable {

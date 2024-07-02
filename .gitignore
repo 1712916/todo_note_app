@@ -55,3 +55,4 @@ ios/Podfile.lock
 lib/feature/home/bloc/group_bloc.dart
 linux/flutter/generated_plugin_registrant.cc
 linux/flutter/generated_plugins.cmake
+note_collection.g.dart

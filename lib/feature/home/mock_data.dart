@@ -1,4 +1,4 @@
-import 'package:note_app/data/note_entity.dart';
+import 'package:note_app/data/entity/note_entity.dart';
 
 List<NoteGroupEntity> _mockGroupList = List.generate(
   10,

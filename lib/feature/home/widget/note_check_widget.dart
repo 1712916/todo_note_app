@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:note_app/data/note_entity.dart';
+import 'package:note_app/data/entity/note_entity.dart';
 
 class NoteCheckWidget extends StatelessWidget {
   const NoteCheckWidget({super.key, required this.note, required this.onCheckChanged});

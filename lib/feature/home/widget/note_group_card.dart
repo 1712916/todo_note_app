@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:note_app/data/note_entity.dart';
+import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/feature/home/mock_data.dart';
 import 'package:note_app/util/navigator/app_navigator.dart';
 import 'package:note_app/util/navigator/app_page.dart';
