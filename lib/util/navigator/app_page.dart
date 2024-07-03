@@ -3,6 +3,7 @@ import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/feature/home/presentation/deleted_page.dart';
 import 'package:note_app/feature/home/presentation/group_note_detail_page.dart';
 import 'package:note_app/feature/home/presentation/home_page.dart';
+import 'package:note_app/feature/home/presentation/search_page.dart';
 
 sealed class AppPage {
   final String path;
@@ -38,5 +39,14 @@ class GetGroupNoteDetailPage extends AppPage {
     return GroupNoteDetailPage(
       group: arguments as NoteGroupEntity,
     );
+  }
+}
+
+class GetSearchPage extends AppPage {
+  GetSearchPage() : super('/search');
+
+  @override
+  Widget? getPage(Object? arguments) {
+    return SearchPage();
   }
 }

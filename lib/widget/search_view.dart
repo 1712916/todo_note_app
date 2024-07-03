@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:note_app/util/navigator/app_navigator.dart';
+import 'package:note_app/util/navigator/app_page.dart';
 
 class SearchView extends StatelessWidget {
   const SearchView({super.key, this.onTap});
@@ -7,27 +9,22 @@ class SearchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: theme.dividerColor,
+      onTap: () {
+        AppNavigator.to(GetSearchPage());
+      },
+      child: AbsorbPointer(
+        absorbing: true,
+        child: Hero(
+          tag: 'search_view',
+          child: SearchBar(
+            padding: const MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
+            leading: const Icon(Icons.search),
+            onTap: () {
+              print('LOL');
+            },
+            hintText: 'Search notes',
           ),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.search),
-            const SizedBox(width: 8),
-            Text(
-              'Search...',
-              style: theme.textTheme.labelLarge,
-            ),
-          ],
         ),
       ),
     );

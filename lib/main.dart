@@ -91,18 +91,20 @@ class _MyAppState extends State<MyApp> {
             themeMode: AppTheme.instance.mode,
             theme: ThemeData.light(),
             debugShowCheckedModeBanner: false,
-            // theme: ThemeData(
-            //   useMaterial3: true,
-            // ),
-            // darkTheme: ThemeData(
-            //   useMaterial3: true,
-            // ),
             home: GetHomePage().getPage(null),
             // home: HomeTestDatabase(),
             navigatorKey: AppNavigator.navigatorKey,
             navigatorObservers: [
               AppLifeCycleMixin.routeObserver,
             ],
+            builder: (context, child) {
+              return GestureDetector(
+                onTap: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                child: child,
+              );
+            },
           );
         },
       ),

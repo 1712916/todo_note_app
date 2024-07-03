@@ -35,15 +35,9 @@ class _HomePageState extends BasePageState<HomePage> {
   }
 
   Widget _buildSearchBar() {
-    return const SizedBox();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          const Expanded(child: SearchView()),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.calendar_month_outlined)),
-        ],
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: SearchView(),
     );
   }
 
@@ -110,7 +104,7 @@ class _MainLayoutState extends State<MainLayout> {
                 indexSelected: 0,
                 paddingVertical: 17,
                 onTap: (int index) {
-                  AppNavigator.to(GetDeletedPage());
+                  // AppNavigator.to(GetDeletedPage());
                 },
                 color: Colors.black,
                 colorSelected: Theme.of(context).primaryColor,
