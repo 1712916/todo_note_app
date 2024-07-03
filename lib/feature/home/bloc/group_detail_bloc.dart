@@ -23,6 +23,12 @@ class GroupDetailBloc extends Cubit<GroupDetailState> implements CrudRepository<
   final NoteObserverData noteObserverData;
 
   @override
+  Future<void> close() {
+    noteObserverData.cancelListen();
+    return super.close();
+  }
+
+  @override
   Future<NoteEntity> create(NoteEntity item) {
     return noteRepository.create(item);
   }

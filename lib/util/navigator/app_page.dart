@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/data/entity/note_entity.dart';
+import 'package:note_app/feature/home/presentation/deleted_page.dart';
 import 'package:note_app/feature/home/presentation/group_note_detail_page.dart';
 import 'package:note_app/feature/home/presentation/home_page.dart';
+
+sealed class AppPage {
+  final String path;
+
+  AppPage(this.path);
+
+  Widget? getPage(Object? arguments);
+}
 
 class GetHomePage extends AppPage {
   GetHomePage() : super('/home');
@@ -12,12 +21,13 @@ class GetHomePage extends AppPage {
   }
 }
 
-sealed class AppPage {
-  final String path;
+class GetDeletedPage extends AppPage {
+  GetDeletedPage() : super('/deleted-history');
 
-  AppPage(this.path);
-
-  Widget? getPage(Object? arguments);
+  @override
+  Widget? getPage(Object? arguments) {
+    return const DeletedPage();
+  }
 }
 
 class GetGroupNoteDetailPage extends AppPage {

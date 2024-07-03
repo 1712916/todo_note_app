@@ -7,6 +7,8 @@ import 'package:note_app/feature/home/widget/group_note_card_list.dart';
 import 'package:note_app/feature/home/widget/note_group_card.dart';
 import 'package:note_app/feature/home/widget/note_group_list_widget.dart';
 import 'package:note_app/resource/string.dart';
+import 'package:note_app/util/navigator/app_navigator.dart';
+import 'package:note_app/util/navigator/app_page.dart';
 import 'package:note_app/widget/search_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -107,7 +109,9 @@ class _MainLayoutState extends State<MainLayout> {
                 items: items,
                 indexSelected: 0,
                 paddingVertical: 17,
-                onTap: (int index) {},
+                onTap: (int index) {
+                  AppNavigator.to(GetDeletedPage());
+                },
                 color: Colors.black,
                 colorSelected: Theme.of(context).primaryColor,
               ),
