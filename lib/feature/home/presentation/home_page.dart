@@ -1,3 +1,4 @@
+import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:note_app/base_presentation/page/base_page.dart';
 import 'package:note_app/base_presentation/view/view.dart';
@@ -17,33 +18,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends BasePageState<HomePage> {
   @override
-  PreferredSizeWidget? buildAppBar(BuildContext context) {
-    return AppBar(
-      title: LText(StringLocalization.notes),
-      centerTitle: false,
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.search),
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.calendar_month_outlined),
-        ),
-      ],
-    );
-  }
-
-  @override
   Widget buildBody(BuildContext context) {
-    return Column(
-      children: [
-        _buildSearchBar(),
-        _buildNoteGroupList(),
-        Expanded(
-          child: _buildListGroupCard(),
-        ),
-      ],
+    return SafeArea(
+      child: Column(
+        children: [
+          _buildSearchBar(),
+          _buildNoteGroupList(),
+          Expanded(
+            child: _buildListGroupCard(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -95,3 +80,48 @@ class _HomePageState extends BasePageState<HomePage> {
     return GroupNoteCardList();
   }
 }
+
+class MainLayout extends StatefulWidget {
+  const MainLayout({super.key});
+
+  @override
+  State<MainLayout> createState() => _MainLayoutState();
+}
+
+class _MainLayoutState extends State<MainLayout> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          HomePage(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              padding: const EdgeInsets.only(bottom: 30, left: 32, right: 32),
+              child: BottomBarFloating(
+                borderRadius: BorderRadius.circular(40),
+                backgroundColor: Theme.of(context).cardColor,
+                items: items,
+                indexSelected: 0,
+                paddingVertical: 17,
+                onTap: (int index) {},
+                color: Colors.black,
+                colorSelected: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+const List<TabItem> items = [
+  TabItem(icon: Icons.home),
+  TabItem(icon: Icons.search),
+  TabItem(icon: Icons.calendar_month_outlined),
+  TabItem(icon: Icons.auto_delete_outlined),
+];

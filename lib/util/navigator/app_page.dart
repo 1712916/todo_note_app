@@ -8,7 +8,7 @@ class GetHomePage extends AppPage {
 
   @override
   Widget? getPage(Object? arguments) {
-    return const HomePage();
+    return const MainLayout();
   }
 }
 

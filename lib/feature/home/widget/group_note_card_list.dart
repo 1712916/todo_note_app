@@ -21,19 +21,17 @@ class _GroupNoteCardListState extends State<GroupNoteCardList> {
       selector: (state) => state.groups,
       builder: (context, groups) {
         if (groups?.isEmpty ?? true) {
-          return Text('empty');
+          return const Text('empty');
         }
 
         return GridView.builder(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 4,
             mainAxisSpacing: 4,
           ),
           itemBuilder: (context, index) {
-            ;
-
             return NoteGroupCard(
               group: groups![index],
             );
