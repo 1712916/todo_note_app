@@ -34,12 +34,12 @@ class NoteGroupCollectionToEntityMapping extends Mapping<NoteGroupCollection, No
   }
 }
 
-class NoteMapping extends Mapping<NoteCollection, NoteEntity> {
-  NoteMapping._();
+class MappingNoteCollectionToEntity extends Mapping<NoteCollection, NoteEntity> {
+  MappingNoteCollectionToEntity._();
 
-  static final NoteMapping _i = NoteMapping._();
+  static final MappingNoteCollectionToEntity _i = MappingNoteCollectionToEntity._();
 
-  factory NoteMapping() => _i;
+  factory MappingNoteCollectionToEntity() => _i;
 
   @override
   NoteEntity to(NoteCollection input) {
@@ -48,7 +48,7 @@ class NoteMapping extends Mapping<NoteCollection, NoteEntity> {
       description: input.description,
       updatedDateTime: input.updatedDateTime,
       isDone: input.isDone,
-      attachments: input.attachments?.map(AttachmentMapping().to).toList(),
+      attachments: input.attachments?.map(AttachmentCollectionToEntityMapping().to).toList(),
       date: input.date,
       groupId: input.groupId,
       isDeleted: input.isDeleted,
@@ -56,14 +56,27 @@ class NoteMapping extends Mapping<NoteCollection, NoteEntity> {
   }
 }
 
-class AttachmentMapping extends Mapping<AttachmentCollection, AttachmentEntity> {
-  AttachmentMapping._();
+class AttachmentCollectionToEntityMapping extends Mapping<AttachmentCollection, AttachmentEntity> {
+  AttachmentCollectionToEntityMapping._();
 
-  static final AttachmentMapping _i = AttachmentMapping._();
+  static final AttachmentCollectionToEntityMapping _i = AttachmentCollectionToEntityMapping._();
 
-  factory AttachmentMapping() => _i;
+  factory AttachmentCollectionToEntityMapping() => _i;
   @override
   AttachmentEntity to(AttachmentCollection input) {
     return AttachmentEntity(file: AppFile(path: input.path ?? '', name: input.name ?? ''));
+  }
+}
+
+class AttachmentEntityToCollectionMapping extends Mapping<AttachmentEntity, AttachmentCollection> {
+  AttachmentEntityToCollectionMapping._();
+
+  static final AttachmentEntityToCollectionMapping _i = AttachmentEntityToCollectionMapping._();
+
+  factory AttachmentEntityToCollectionMapping() => _i;
+
+  @override
+  AttachmentCollection to(AttachmentEntity input) {
+    return AttachmentCollection(path: input.file?.path ?? '', name: input.file?.name ?? '');
   }
 }

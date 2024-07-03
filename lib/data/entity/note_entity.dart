@@ -13,7 +13,7 @@ import 'package:equatable/equatable.dart';
 import 'package:note_app/data/entity/app_file.dart';
 import 'package:note_app/data/repository/note_repository_impl.dart';
 
-class NoteEntity extends Equatable {
+class NoteEntity extends Equatable implements GetId<int> {
   final int? id;
 
   ///[groupId] is id of [@NoteGroupEntity]
@@ -47,6 +47,9 @@ class NoteEntity extends Equatable {
         updatedDateTime,
         attachments,
       ];
+
+  @override
+  int? get getId => id;
 
   NoteEntity copyWith({
     int? id,

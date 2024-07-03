@@ -34,3 +34,48 @@ class NoteCheckWidget extends StatelessWidget {
     );
   }
 }
+
+class NoteCard extends StatelessWidget {
+  const NoteCard({super.key, required this.note, required this.onCheckChanged, required this.tailWidget});
+
+  final NoteEntity note;
+  final ValueChanged<bool?> onCheckChanged;
+  final Widget tailWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: Row(
+        children: [
+          Checkbox(
+            value: note.isDone ?? false,
+            onChanged: onCheckChanged,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  note.description ?? '',
+                  style: theme.textTheme.titleLarge,
+                ),
+                if (note.date != null)
+                  Text(
+                    note.date.toString().split(' ').first,
+                    style: theme.textTheme.labelSmall,
+                  ),
+                if (note.attachments?.isNotEmpty ?? false)
+                  RawChip(
+                    label: Text('${note.attachments?.length ?? 0}'),
+                    avatar: Icon(Icons.attach_file_rounded),
+                  ),
+              ],
+            ),
+          ),
+          tailWidget,
+        ],
+      ),
+    );
+  }
+}

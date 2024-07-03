@@ -69,9 +69,9 @@ mixin IsarCrudRepository<T extends GetId<int>, C> on CrudRepository<T, int> {
 
 class NoteGroupRepositoryImpl extends NoteGroupRepository
     with IsarCrudRepository<NoteGroupEntity, NoteGroupCollection> {
-  final Isar _isar;
+  NoteGroupRepositoryImpl();
 
-  NoteGroupRepositoryImpl({required Isar isar}) : _isar = isar;
+  final Isar _isar = Isar.getInstance()!;
 
   @override
   Isar get isar => _isar;
@@ -98,28 +98,34 @@ class NoteGroupRepositoryImpl extends NoteGroupRepository
   }
 }
 
-class NoteRepositoryImpl extends NoteRepository {
+class NoteRepositoryImpl extends NoteRepository with IsarCrudRepository<NoteEntity, NoteCollection> {
+  final Isar _isar = Isar.getInstance()!;
+
   @override
-  Future<NoteEntity> create(NoteEntity item) {
-    // TODO: implement create
-    throw UnimplementedError();
+  Isar get isar => _isar;
+
+  @override
+  IsarCollection<NoteCollection> get _collection => isar.noteCollections;
+
+  @override
+  NoteEntity getItemFromCollection(NoteCollection collection) {
+    return MappingNoteCollectionToEntity().to(collection);
   }
 
   @override
-  Future<bool> delete(NoteEntity item) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  NoteCollection createNewItem(NoteEntity item) {
+    return NoteCollection()
+      ..groupId = item.groupId
+      ..description = item.description
+      ..date = item.date
+      ..isDone = item.isDone
+      ..attachments = item.attachments?.map(AttachmentEntityToCollectionMapping().to).toList()
+      ..isDeleted = item.isDeleted
+      ..updatedDateTime = DateTime.now();
   }
 
   @override
-  Future<NoteEntity> read(int id) {
-    // TODO: implement read
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<NoteEntity> update(NoteEntity item) {
-    // TODO: implement update
-    throw UnimplementedError();
+  NoteCollection updateNewItem(NoteEntity item) {
+    return createNewItem(item)..id = item.id!;
   }
 }

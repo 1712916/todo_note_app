@@ -25,6 +25,11 @@ class NoteCollection {
 
 @embedded
 class AttachmentCollection {
-  String? path;
-  String? name;
+  final String? path;
+  final String? name;
+
+  AttachmentCollection({
+    this.path,
+    this.name,
+  });
 }

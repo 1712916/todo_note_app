@@ -30,3 +30,34 @@ class NoteGroupObserverDataIsarImpl extends NoteGroupObserverData {
     }
   }
 }
+
+class ListNoteByGroupObserverDataIsar extends NoteObserverData {
+  ListNoteByGroupObserverDataIsar({required this.group});
+
+  final NoteGroupEntity group;
+
+  final Isar _isar = Isar.getInstance()!;
+
+  @override
+  void listener(Function(List<NoteEntity> value) callback) {
+    if (subscription == null) {
+      setSubscription(
+        _isar.noteCollections
+            .where()
+            .filter()
+            .groupIdEqualTo(group.id)
+            .and()
+            .isDeletedIsNull()
+            .or()
+            .isDeletedEqualTo(false)
+            .watch(fireImmediately: true)
+            .map(
+              (collections) => collections.map(MappingNoteCollectionToEntity().to).toList(),
+            )
+            .listen(callback),
+      );
+    } else {
+      //todo:
+    }
+  }
+}

@@ -79,7 +79,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         BlocProvider(
           create: (context) => ListNoteGroupCubit(
-            groupRepository: NoteGroupRepositoryImpl(isar: isar!),
+            groupRepository: NoteGroupRepositoryImpl(),
             groupObserverData: NoteGroupObserverDataIsarImpl(),
           ),
         ),
