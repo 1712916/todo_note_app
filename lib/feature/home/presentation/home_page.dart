@@ -85,14 +85,12 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int _currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          HomePage(),
+          const HomePage(),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -104,7 +102,11 @@ class _MainLayoutState extends State<MainLayout> {
                 indexSelected: 0,
                 paddingVertical: 17,
                 onTap: (int index) {
-                  // AppNavigator.to(GetDeletedPage());
+                  if (index == 1) {
+                    AppNavigator.to(GetCalendarPage());
+                  } else if (index == 2) {
+                    AppNavigator.to(GetDeletedPage());
+                  }
                 },
                 color: Colors.black,
                 colorSelected: Theme.of(context).primaryColor,
@@ -119,7 +121,6 @@ class _MainLayoutState extends State<MainLayout> {
 
 const List<TabItem> items = [
   TabItem(icon: Icons.home),
-  TabItem(icon: Icons.search),
   TabItem(icon: Icons.calendar_month_outlined),
   TabItem(icon: Icons.auto_delete_outlined),
 ];

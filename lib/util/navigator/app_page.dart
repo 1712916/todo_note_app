@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/data/entity/note_entity.dart';
+import 'package:note_app/feature/home/presentation/calendar_page.dart';
 import 'package:note_app/feature/home/presentation/deleted_page.dart';
 import 'package:note_app/feature/home/presentation/group_note_detail_page.dart';
 import 'package:note_app/feature/home/presentation/home_page.dart';
@@ -48,5 +49,14 @@ class GetSearchPage extends AppPage {
   @override
   Widget? getPage(Object? arguments) {
     return SearchPage();
+  }
+}
+
+class GetCalendarPage extends AppPage {
+  GetCalendarPage() : super('/calendar');
+
+  @override
+  Widget? getPage(Object? arguments) {
+    return const CalendarPage();
   }
 }

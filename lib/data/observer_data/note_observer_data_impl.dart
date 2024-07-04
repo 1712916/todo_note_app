@@ -81,3 +81,63 @@ class DeletedListNoteByGroupObserverDataIsar extends NoteObserverData {
     }
   }
 }
+
+class ListNoteByDateObserverDataIsar extends NoteObserverData {
+  ListNoteByDateObserverDataIsar({required this.date});
+
+  final DateTime date;
+
+  final Isar _isar = Isar.getInstance()!;
+
+  @override
+  void listener(Function(List<NoteEntity> value) callback) {
+    if (subscription == null) {
+      setSubscription(
+        _isar.noteCollections
+            .filter()
+            .dateEqualTo(DateTime(date.year, date.month, date.day))
+            .group((q) => q.isDeletedIsNull().or().isDeletedEqualTo(false))
+            .watch(fireImmediately: true)
+            .map(
+              (collections) => collections.map(MappingNoteCollectionToEntity().to).toList(),
+            )
+            .listen(callback),
+      );
+    } else {
+      //todo:
+    }
+  }
+}
+
+class NoteCountByDateObserverDataIsar extends NoteCountObserverData {
+  NoteCountByDateObserverDataIsar({required this.date});
+
+  final DateTime date;
+
+  final Isar _isar = Isar.getInstance()!;
+
+  @override
+  void listener(Function(int value) callback) {
+    if (subscription == null) {
+      setSubscription(
+        _isar.noteCollections
+            .filter()
+            .dateEqualTo(DateTime(date.year, date.month, date.day))
+            .group((q) => q.isDeletedIsNull().or().isDeletedEqualTo(false))
+            .watchLazy(fireImmediately: true)
+            .flatMap(
+          (_) {
+            return _isar.noteCollections
+                .filter()
+                .dateEqualTo(DateTime(date.year, date.month, date.day))
+                .group((q) => q.isDeletedIsNull().or().isDeletedEqualTo(false))
+                .count()
+                .asStream();
+          },
+        ).listen(callback),
+      );
+    } else {
+      //todo:
+    }
+  }
+}
