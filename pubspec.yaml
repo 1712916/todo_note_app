@@ -39,8 +39,8 @@ dependencies:
   #permission
   permission_handler: ^11.3.1
 
-  #open file
-  open_file_plus: ^3.4.1+1
+#  #open file
+#  open_file_plus: ^3.4.1+1
 
   #show snack bar
   another_flushbar: ^1.12.30

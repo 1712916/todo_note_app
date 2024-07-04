@@ -7,7 +7,7 @@ import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/util/theme_util.dart';
 import 'package:note_app/widget/file_picker.dart';
 import 'package:note_app/widget/show_bottom_sheet.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+// import 'package:open_file_plus/open_file_plus.dart';
 
 class AddNoteDetailPage extends StatefulWidget with ShowBottomSheet<NoteEntity> {
   const AddNoteDetailPage({super.key, this.initNoteGroup});
@@ -89,7 +89,7 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
                             return InputChip(
                               label: Text(e.name),
                               onPressed: () {
-                                OpenFile.open(e.path);
+                                // OpenFile.open(e.path);
                               },
                               deleteIcon: const Icon(
                                 Icons.close_rounded,
