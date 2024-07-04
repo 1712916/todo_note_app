@@ -12,6 +12,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:note_app/data/entity/app_file.dart';
 import 'package:note_app/data/repository/note_repository_impl.dart';
+import 'package:note_app/feature/home/presentation/calendar_page.dart';
 
 class NoteEntity extends Equatable implements GetId<int> {
   final int? id;
@@ -35,6 +36,19 @@ class NoteEntity extends Equatable implements GetId<int> {
     required this.updatedDateTime,
     required this.attachments,
   });
+
+  factory NoteEntity.defaultNote() {
+    return const NoteEntity(
+      id: null,
+      groupId: null,
+      description: null,
+      isDone: null,
+      isDeleted: null,
+      date: null,
+      updatedDateTime: null,
+      attachments: null,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -121,4 +135,32 @@ class NoteGroupEntity extends Equatable implements GetId<int> {
 
   @override
   int? get getId => id;
+}
+
+extension ShareNote on NoteEntity {
+  ///format
+  ///	{group name} - {note description} - {done status} - {date}
+  ///	{Phân loại} - {Nội dung ghi chú} - {Trạng thái hoàn tất} - {Thời gian đánh dấu}
+  String getShareData(NoteGroupEntity? group) {
+    List<String> noteSegment = [
+      group?.name != null ? group!.name! : '',
+      description ?? '',
+      _getStatusString(),
+      date?.dateString() ?? '',
+    ];
+
+    return noteSegment
+        .where(
+          (t) => t.isNotEmpty,
+        )
+        .join(' - ');
+  }
+
+  String _getStatusString() {
+    if (isDone ?? false) {
+      return 'Đã hoàn tất';
+    }
+
+    return '';
+  }
 }
