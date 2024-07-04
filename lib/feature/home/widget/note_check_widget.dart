@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app/data/entity/note_entity.dart';
+import 'package:note_app/feature/home/bloc/crud_note_bloc.dart';
 import 'package:note_app/feature/home/presentation/calendar_page.dart';
 import 'package:note_app/util/list_util.dart';
+import 'package:share_plus/share_plus.dart';
 
 class NoteCheckWidget extends StatelessWidget {
-  const NoteCheckWidget({super.key, required this.note, required this.onCheckChanged});
+  const NoteCheckWidget({
+    super.key,
+    required this.note,
+    required this.onCheckChanged,
+    this.onTap,
+  });
 
   final NoteEntity note;
   final ValueChanged<bool?> onCheckChanged;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -41,16 +50,14 @@ class NoteCard extends StatelessWidget {
   const NoteCard({
     super.key,
     required this.note,
-    required this.onCheckChanged,
-    required this.tailWidget,
-    this.onShareTap,
+    this.showDelete = true,
+    this.showCheckDone = true,
     this.onTap,
   });
 
   final NoteEntity note;
-  final ValueChanged<bool?> onCheckChanged;
-  final Widget tailWidget;
-  final VoidCallback? onShareTap;
+  final bool showDelete;
+  final bool showCheckDone;
   final VoidCallback? onTap;
 
   @override
@@ -61,10 +68,16 @@ class NoteCard extends StatelessWidget {
 
     return ListTile(
       onTap: onTap,
-      leading: Checkbox(
-        value: note.isDone ?? false,
-        onChanged: onCheckChanged,
-      ),
+      leading: showCheckDone
+          ? Checkbox(
+              value: note.isDone ?? false,
+              onChanged: (isDone) {
+                if (isDone != null) {
+                  context.read<CrudNoteBloc>().checkDone(isDone, note);
+                }
+              },
+            )
+          : null,
       title: Text(
         note.description ?? '',
         style: theme.textTheme.titleLarge,
@@ -102,42 +115,16 @@ class NoteCard extends StatelessWidget {
         children: [
           IconButton(
               onPressed: () {
-                onShareTap?.call();
+                // Share.share(note.getShareData(widget.group));
               },
               icon: Icon(Icons.share)),
-          tailWidget,
-        ],
-      ),
-    );
-    return Card(
-      child: Row(
-        children: [
-          Checkbox(
-            value: note.isDone ?? false,
-            onChanged: onCheckChanged,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  note.description ?? '',
-                  style: theme.textTheme.titleLarge,
-                ),
-                if (note.date != null)
-                  Text(
-                    note.date.toString().split(' ').first,
-                    style: theme.textTheme.labelSmall,
-                  ),
-                if (note.attachments?.isNotEmpty ?? false)
-                  RawChip(
-                    label: Text('${note.attachments?.length ?? 0}'),
-                    avatar: Icon(Icons.attach_file_rounded),
-                  ),
-              ],
-            ),
-          ),
-          tailWidget,
+          if (showDelete)
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                context.read<CrudNoteBloc>().delete(note);
+              },
+            )
         ],
       ),
     );

@@ -5,6 +5,7 @@ import 'package:note_app/base_presentation/page/base_page.dart';
 import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/data/observer_data/note_observer_data_impl.dart';
 import 'package:note_app/data/repository/note_repository_impl.dart';
+import 'package:note_app/feature/home/bloc/crud_note_bloc.dart';
 import 'package:note_app/feature/home/bloc/group_detail_bloc.dart';
 
 import 'package:note_app/feature/home/presentation/add_note_detail_page.dart';
@@ -23,7 +24,6 @@ class GroupNoteDetailPage extends StatefulWidget {
 class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
   late final GroupDetailBloc groupDetailBloc = GroupDetailBloc(
     group: widget.group,
-    noteRepository: NoteRepositoryImpl(),
     noteObserverData: ListNoteByGroupObserverDataIsar(group: widget.group),
   );
 
@@ -94,36 +94,13 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
         }
 
         return ListView.separated(
-          padding: EdgeInsets.fromLTRB(16, 16, 16, 160),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 160),
           itemBuilder: (context, index) {
             final item = notes[index];
 
             return NoteCard(
               note: item,
-              onCheckChanged: (isDone) {
-                if (isDone != null) {
-                  groupDetailBloc.checkDone(isDone, item);
-                }
-              },
-              onShareTap: () {
-                Share.share(item.getShareData(widget.group));
-              },
               onTap: () => editNote(item),
-              tailWidget: BlocSelector<GroupDetailBloc, GroupDetailState, bool>(
-                selector: (state) => state.isDeleteMode ?? false,
-                builder: (context, state) {
-                  if (state) {
-                    return IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        groupDetailBloc.delete(item);
-                      },
-                    );
-                  }
-
-                  return const SizedBox();
-                },
-              ),
             );
           },
           separatorBuilder: (context, index) => const Divider(height: 0),
@@ -149,7 +126,7 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
     ).showBottomSheet(context).then(
       (note) {
         if (note != null) {
-          groupDetailBloc.create(note);
+          context.read<CrudNoteBloc>().create(note);
         }
       },
     );
@@ -162,7 +139,7 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
     ).showBottomSheet(context).then(
       (note) {
         if (note != null) {
-          groupDetailBloc.update(note);
+          context.read<CrudNoteBloc>().update(note);
         }
       },
     );

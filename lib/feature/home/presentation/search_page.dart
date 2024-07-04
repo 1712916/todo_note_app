@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app/base_presentation/page/base_page.dart';
 import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/feature/home/bloc/search_bloc.dart';
+import 'package:note_app/feature/home/widget/note_check_widget.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -103,11 +104,13 @@ class _SearchPageState extends BasePageState<SearchPage> {
                 }
 
                 return ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 160),
                   itemBuilder: (context, index) {
-                    final item = notes[index];
-                    return ListTile(
-                      onTap: () {},
-                      title: Title(color: Colors.white, child: Text('${item.description}')),
+                    final note = notes[index];
+                    return NoteCard(
+                      note: note,
+                      showDelete: false,
+                      showCheckDone: false,
                     );
                   },
                   separatorBuilder: (context, index) => const Divider(),

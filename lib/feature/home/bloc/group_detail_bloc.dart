@@ -5,10 +5,9 @@ import 'package:note_app/data/observer_data/note_observer_data.dart';
 import 'package:note_app/data/repository/crud_repository.dart';
 import 'package:note_app/data/repository/note_repository.dart';
 
-class GroupDetailBloc extends Cubit<GroupDetailState> implements CrudRepository<NoteEntity, int> {
+class GroupDetailBloc extends Cubit<GroupDetailState> {
   GroupDetailBloc({
     required this.group,
-    required this.noteRepository,
     required this.noteObserverData,
   }) : super(GroupDetailState.initialState()) {
     noteObserverData.listener(
@@ -19,37 +18,12 @@ class GroupDetailBloc extends Cubit<GroupDetailState> implements CrudRepository<
   }
 
   final NoteGroupEntity group;
-  final NoteRepository noteRepository;
   final NoteObserverData noteObserverData;
 
   @override
   Future<void> close() {
     noteObserverData.cancelListen();
     return super.close();
-  }
-
-  @override
-  Future<NoteEntity> create(NoteEntity item) {
-    return noteRepository.create(item);
-  }
-
-  @override
-  Future<bool> delete(NoteEntity item) {
-    return noteRepository.update(item.copyWith(isDeleted: true)).then((value) => true);
-  }
-
-  @override
-  Future<NoteEntity> read(int id) {
-    return noteRepository.read(id);
-  }
-
-  @override
-  Future<NoteEntity> update(NoteEntity item) {
-    return noteRepository.update(item);
-  }
-
-  void checkDone(bool isDone, NoteEntity item) {
-    update(item.copyWith(isDone: isDone));
   }
 
   void switchDeleteMode(bool value) {

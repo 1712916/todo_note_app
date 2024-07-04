@@ -14,6 +14,7 @@ import 'package:note_app/data/observer_data/note_observer_data_impl.dart';
 import 'package:note_app/data/repository/note_repository_impl.dart';
 import 'package:note_app/database/database.dart';
 import 'package:note_app/database/isar_database.dart';
+import 'package:note_app/feature/home/bloc/crud_note_bloc.dart';
 import 'package:note_app/feature/home/bloc/group_bloc.dart';
 import 'package:note_app/util/app_life_cycle_mixin.dart';
 import 'package:note_app/util/navigator/app_navigator.dart';
@@ -81,6 +82,11 @@ class _MyAppState extends State<MyApp> {
           create: (context) => ListNoteGroupCubit(
             groupRepository: NoteGroupRepositoryImpl(),
             groupObserverData: NoteGroupObserverDataIsarImpl(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => CrudNoteBloc(
+            noteRepository: NoteRepositoryImpl(),
           ),
         ),
       ],

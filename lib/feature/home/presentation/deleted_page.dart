@@ -52,13 +52,6 @@ class _DeletedPageState extends BasePageState<DeletedPage> {
 
             return NoteCard(
               note: item,
-              onCheckChanged: (isDone) {},
-              tailWidget: IconButton(
-                onPressed: () {
-                  deletedListBloc.restore(item);
-                },
-                icon: const Icon(Icons.restore),
-              ),
             );
           },
           separatorBuilder: (context, index) => const SizedBox(height: 4),

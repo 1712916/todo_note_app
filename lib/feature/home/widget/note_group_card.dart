@@ -21,7 +21,6 @@ class NoteGroupCard extends StatefulWidget {
 class _NoteGroupCardState extends State<NoteGroupCard> {
   late final GroupDetailBloc groupDetailBloc = GroupDetailBloc(
     group: widget.group,
-    noteRepository: NoteRepositoryImpl(),
     noteObserverData: ListNoteByGroupObserverDataIsar(group: widget.group),
   );
 
@@ -84,41 +83,6 @@ class _NoteGroupCardState extends State<NoteGroupCard> {
             ),
           ),
         ),
-        // child: Card(
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(8.0),
-        //     child: Column(
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         Text(
-        //           (widget.group.name ?? ''),
-        //           maxLines: 1,
-        //           overflow: TextOverflow.ellipsis,
-        //           style: theme.textTheme.headlineSmall,
-        //         ),
-        //         Expanded(
-        //             child: BlocSelector<GroupDetailBloc, GroupDetailState, List<NoteEntity>?>(
-        //           selector: (state) => state.notes,
-        //           builder: (context, notes) {
-        //             if (!notes.isNotNullAndNotEmpty) {
-        //               return Text('');
-        //             }
-        //
-        //             return ListView.separated(
-        //               itemBuilder: (context, index) {
-        //                 final item = notes[index];
-        //
-        //                 return Text(item.description ?? '');
-        //               },
-        //               separatorBuilder: (context, index) => const SizedBox(height: 4),
-        //               itemCount: notes!.length,
-        //             );
-        //           },
-        //         ))
-        //       ],
-        //     ),
-        //   ),
-        // ),
       ),
     );
   }
