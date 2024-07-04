@@ -10,9 +10,10 @@ import 'package:note_app/widget/show_bottom_sheet.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 
 class AddNoteDetailPage extends StatefulWidget with ShowBottomSheet<NoteEntity> {
-  const AddNoteDetailPage({super.key, this.initNoteGroup});
+  const AddNoteDetailPage({super.key, this.initNoteGroup, this.initNote});
 
   final NoteGroupEntity? initNoteGroup;
+  final NoteEntity? initNote;
 
   @override
   State<AddNoteDetailPage> createState() => _AddNoteDetailPageState();
@@ -27,6 +28,12 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
 
   DateTime? date;
 
+  ///check if init note is not null, it's mean this view is using for editing
+  bool get isEditView => widget.initNote != null;
+
+  NoteEntity get initNote => widget.initNote!;
+
+  ///use HashSet to storage AppFile list in which each object can occur only once.
   Set<AppFile> files = HashSet(
     equals: (p0, p1) {
       return p0.name == p1.name;
@@ -36,8 +43,16 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
 
   @override
   void initState() {
-    group = widget.initNoteGroup;
     super.initState();
+
+    group = widget.initNoteGroup;
+
+    ///set initial data for input form
+    if (isEditView) {
+      _controller.text = initNote.description ?? '';
+      date = initNote.date;
+      files.addAll([...?initNote.attachments?.where((e) => e.file != null).map((e) => e.file!)]);
+    }
   }
 
   @override
@@ -54,8 +69,14 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: TextField(
             controller: _controller,
-            decoration: const InputDecoration.collapsed(hintText: 'Input new group'),
+            decoration: const InputDecoration.collapsed(hintText: 'Note description...'),
             autofocus: true,
+            onSubmitted: (value) {
+              //handle for enter by keyboard
+              if (haveText) {
+                onSave();
+              }
+            },
           ),
         ),
         const SizedBox(height: 4),
@@ -110,7 +131,7 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
             children: [
               IconButton(onPressed: _showDatePicker, icon: const Icon(Icons.calendar_month_outlined)),
@@ -135,22 +156,7 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
                   return Container(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      onPressed: !haveText
-                          ? null
-                          : () {
-                              Navigator.of(context).pop(
-                                NoteEntity(
-                                  id: null,
-                                  isDone: null,
-                                  isDeleted: null,
-                                  updatedDateTime: null,
-                                  groupId: group?.id,
-                                  description: _controller.text.trim(),
-                                  date: date,
-                                  attachments: files.map((e) => AttachmentEntity(file: e)).toList(),
-                                ),
-                              );
-                            },
+                      onPressed: !haveText ? null : onSave,
                       icon: Text(
                         'Save',
                         style: theme.textTheme.labelLarge?.copyWith(
@@ -166,6 +172,32 @@ class _AddNoteDetailPageState extends BasePageState<AddNoteDetailPage> with Them
         )
       ],
     );
+  }
+
+  void onSave() {
+    if (isEditView) {
+      Navigator.of(context).pop(
+        initNote.copyWith(
+          groupId: group?.id,
+          description: _controller.text.trim(),
+          date: date,
+          attachments: files.map((e) => AttachmentEntity(file: e)).toList(),
+        ),
+      );
+    } else {
+      Navigator.of(context).pop(
+        NoteEntity(
+          id: null,
+          isDone: null,
+          isDeleted: null,
+          updatedDateTime: null,
+          groupId: group?.id,
+          description: _controller.text.trim(),
+          date: date,
+          attachments: files.map((e) => AttachmentEntity(file: e)).toList(),
+        ),
+      );
+    }
   }
 
   @override

@@ -33,13 +33,19 @@ class _AddGroupNotePageState extends BasePageState<AddGroupNotePage> with ThemeU
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
               controller: _controller,
-              decoration: const InputDecoration.collapsed(hintText: 'Input new group'),
+              decoration: const InputDecoration.collapsed(hintText: 'Input new group...'),
               autofocus: true,
+              onSubmitted: (value) {
+                //handle for enter by keyboard
+                if (haveText) {
+                  Navigator.of(context).pop(_controller.text);
+                }
+              },
             ),
           ),
           const SizedBox(height: 8),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: AnimatedBuilder(
               animation: _controller,
               builder: (context, child) {

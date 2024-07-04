@@ -10,9 +10,10 @@ import 'package:note_app/feature/home/bloc/group_detail_bloc.dart';
 import 'package:note_app/feature/home/presentation/add_note_detail_page.dart';
 import 'package:note_app/feature/home/widget/note_check_widget.dart';
 import 'package:note_app/util/list_util.dart';
+import 'package:share_plus/share_plus.dart';
 
 class GroupNoteDetailPage extends StatefulWidget {
-  const GroupNoteDetailPage({Key? key, required this.group}) : super(key: key);
+  const GroupNoteDetailPage({super.key, required this.group});
   final NoteGroupEntity group;
 
   @override
@@ -47,11 +48,22 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
         BlocSelector<GroupDetailBloc, GroupDetailState, bool>(
           selector: (state) => state.isDeleteMode ?? false,
           builder: (context, state) {
-            return Switch(
-              value: state,
-              onChanged: (value) {
-                groupDetailBloc.switchDeleteMode(value);
-              },
+            return Row(
+              children: [
+                Icon(
+                  Icons.delete,
+                  color: state ? null : Theme.of(context).disabledColor,
+                ),
+                Transform.scale(
+                  scale: 0.8,
+                  child: Switch(
+                    value: state,
+                    onChanged: (value) {
+                      groupDetailBloc.switchDeleteMode(value);
+                    },
+                  ),
+                ),
+              ],
             );
           },
         ),
@@ -61,15 +73,28 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
 
   @override
   Widget buildBody(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocSelector<GroupDetailBloc, GroupDetailState, List<NoteEntity>?>(
       selector: (state) => state.notes,
       builder: (context, notes) {
         if (!notes.isNotNullAndNotEmpty) {
-          return Text('empty notes');
+          return GestureDetector(
+            onTap: () {
+              addNewNote();
+            },
+            child: Center(
+              child: Icon(
+                Icons.add,
+                size: 200,
+                color: theme.hintColor,
+              ),
+            ),
+          );
         }
 
         return ListView.separated(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 160),
           itemBuilder: (context, index) {
             final item = notes[index];
 
@@ -80,12 +105,16 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
                   groupDetailBloc.checkDone(isDone, item);
                 }
               },
+              onShareTap: () {
+                Share.share(item.getShareData(widget.group));
+              },
+              onTap: () => editNote(item),
               tailWidget: BlocSelector<GroupDetailBloc, GroupDetailState, bool>(
                 selector: (state) => state.isDeleteMode ?? false,
                 builder: (context, state) {
                   if (state) {
                     return IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       onPressed: () {
                         groupDetailBloc.delete(item);
                       },
@@ -97,7 +126,7 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
               ),
             );
           },
-          separatorBuilder: (context, index) => const SizedBox(height: 4),
+          separatorBuilder: (context, index) => const Divider(height: 0),
           itemCount: notes!.length,
         );
       },
@@ -108,17 +137,34 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
   Widget? buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        AddNoteDetailPage(
-          initNoteGroup: widget.group,
-        ).showBottomSheet(context).then(
-          (note) {
-            if (note != null) {
-              groupDetailBloc.create(note);
-            }
-          },
-        );
+        addNewNote();
       },
       child: Icon(Icons.add),
+    );
+  }
+
+  void addNewNote() {
+    AddNoteDetailPage(
+      initNoteGroup: widget.group,
+    ).showBottomSheet(context).then(
+      (note) {
+        if (note != null) {
+          groupDetailBloc.create(note);
+        }
+      },
+    );
+  }
+
+  void editNote(NoteEntity note) {
+    AddNoteDetailPage(
+      initNote: note,
+      initNoteGroup: widget.group,
+    ).showBottomSheet(context).then(
+      (note) {
+        if (note != null) {
+          groupDetailBloc.update(note);
+        }
+      },
     );
   }
 }
