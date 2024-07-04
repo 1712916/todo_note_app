@@ -92,7 +92,6 @@ class _MyAppState extends State<MyApp> {
             theme: ThemeData.light(),
             debugShowCheckedModeBanner: false,
             home: GetHomePage().getPage(null),
-            // home: HomeTestDatabase(),
             navigatorKey: AppNavigator.navigatorKey,
             navigatorObservers: [
               AppLifeCycleMixin.routeObserver,

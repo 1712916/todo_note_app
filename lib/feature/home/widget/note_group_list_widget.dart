@@ -17,7 +17,6 @@ class _NoteGroupListWidgetState extends State<NoteGroupListWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
       child: Row(
         children: [
           Expanded(
@@ -25,7 +24,21 @@ class _NoteGroupListWidgetState extends State<NoteGroupListWidget> {
               selector: (state) => state.groups,
               builder: (context, groups) {
                 if (groups?.isEmpty ?? true) {
-                  return Text('empty');
+                  return Container(
+                    margin: EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(8)),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.add,
+                          size: 80,
+                        ),
+                        const SizedBox(width: 16),
+                        Text('Add Group')
+                      ],
+                    ),
+                  );
                 }
 
                 return ListView.separated(
@@ -40,22 +53,93 @@ class _NoteGroupListWidgetState extends State<NoteGroupListWidget> {
               },
             ),
           ),
-          OutlinedButton(
-            onPressed: () {
-              AddGroupNotePage().showBottomSheet(context).then(
-                (groupName) {
-                  if (groupName != null) {
-                    context.read<ListNoteGroupCubit>().createByName(groupName);
-                  }
-                },
-              );
-            },
-            child: const Text('Add'),
-            style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
-                  backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
-                ),
-          )
+          // OutlinedButton(
+          //   onPressed: () {
+          //     AddGroupNotePage().showBottomSheet(context).then(
+          //       (groupName) {
+          //         if (groupName != null) {
+          //           context.read<ListNoteGroupCubit>().createByName(groupName);
+          //         }
+          //       },
+          //     );
+          //   },
+          //   child: const Text('Add'),
+          //   style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
+          //         backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+          //       ),
+          // )
         ],
+      ),
+    );
+  }
+}
+
+class AddNoteGroupWidget extends StatefulWidget {
+  const AddNoteGroupWidget({super.key});
+
+  @override
+  State<AddNoteGroupWidget> createState() => _AddNoteGroupWidgetState();
+}
+
+class _AddNoteGroupWidgetState extends State<AddNoteGroupWidget> {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: () {
+        const AddGroupNotePage().showBottomSheet(context).then(
+          (groupName) {
+            if (groupName != null) {
+              context.read<ListNoteGroupCubit>().createByName(groupName);
+            }
+          },
+        );
+      },
+      child: Card(
+        color: theme.secondaryHeaderColor,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.add,
+                  size: 100,
+                  color: theme.hintColor,
+                ),
+                Text(
+                  'New Group',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.hintColor,
+                  ),
+                ),
+              ],
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              child: BlocSelector<ListNoteGroupCubit, ListNoteGroupState, List<NoteGroupEntity>?>(
+                selector: (state) => state.groups,
+                builder: (context, groups) {
+                  if (groups?.isEmpty ?? true) {
+                    return const SizedBox();
+                  }
+
+                  return IconButton(
+                    onPressed: () {},
+                    icon: Row(
+                      children: [
+                        Text('View all'),
+                        Icon(Icons.navigate_next),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

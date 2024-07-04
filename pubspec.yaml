@@ -48,10 +48,17 @@ dependencies:
   #device info
   device_info_plus: ^10.1.0
 
+  #local database
   isar: 3.1.0+1
   isar_flutter_libs: 3.1.0+1
+
+  #custom bottom navigation bar
   awesome_bottom_bar: ^1.2.4
+
+  #calendar view
   table_calendar: ^3.1.2
+
+  #share data between applications
   share_plus: ^9.0.0
 
 dev_dependencies:

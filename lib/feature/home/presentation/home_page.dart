@@ -25,7 +25,7 @@ class _HomePageState extends BasePageState<HomePage> {
       child: Column(
         children: [
           _buildSearchBar(),
-          _buildNoteGroupList(),
+          // _buildNoteGroupList(),
           Expanded(
             child: _buildListGroupCard(),
           ),
@@ -45,14 +45,6 @@ class _HomePageState extends BasePageState<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Group',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        // const SizedBox(height: 16),
         const NoteGroupListWidget(),
       ],
     );
@@ -62,18 +54,9 @@ class _HomePageState extends BasePageState<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Note',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        // const SizedBox(height: 16),
         Expanded(child: const GroupNoteCardList()),
       ],
     );
-    return GroupNoteCardList();
   }
 }
 

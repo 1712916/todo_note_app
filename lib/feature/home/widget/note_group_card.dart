@@ -35,47 +35,90 @@ class _NoteGroupCardState extends State<NoteGroupCard> {
     final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => groupDetailBloc,
-      child: Card(
-        child: GestureDetector(
-          onTap: () {
-            AppNavigator.to(GetGroupNoteDetailPage(), widget.group).whenComplete(() {
-              setState(() {});
-            });
-          },
+      child: GestureDetector(
+        onTap: () {
+          AppNavigator.to(GetGroupNoteDetailPage(), widget.group);
+        },
+        child: Card(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  (widget.group.name ?? ''),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.headlineSmall,
-                ),
-                Expanded(
-                    child: BlocSelector<GroupDetailBloc, GroupDetailState, List<NoteEntity>?>(
-                  selector: (state) => state.notes,
-                  builder: (context, notes) {
-                    if (!notes.isNotNullAndNotEmpty) {
-                      return Text('empty notes');
-                    }
+            child: BlocSelector<GroupDetailBloc, GroupDetailState, List<NoteEntity>?>(
+              selector: (state) => state.notes,
+              builder: (context, notes) {
+                if (!notes.isNotNullAndNotEmpty) {
+                  return Center(
+                    child: Text(
+                      (widget.group.name ?? ''),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.displayMedium,
+                    ),
+                  );
+                }
 
-                    return ListView.separated(
-                      itemBuilder: (context, index) {
-                        final item = notes[index];
+                return Column(
+                  children: [
+                    Text(
+                      (widget.group.name ?? ''),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.headlineLarge,
+                    ),
+                    Expanded(
+                      child: ListView.separated(
+                        itemBuilder: (context, index) {
+                          final item = notes[index];
 
-                        return Text(item.description ?? '');
-                      },
-                      separatorBuilder: (context, index) => const SizedBox(height: 4),
-                      itemCount: notes!.length,
-                    );
-                  },
-                ))
-              ],
+                          return Text(
+                            item.description ?? '',
+                            style: theme.textTheme.bodyLarge?.copyWith(color: theme.hintColor),
+                          );
+                        },
+                        separatorBuilder: (context, index) => const SizedBox(height: 4),
+                        itemCount: notes!.length,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
+        // child: Card(
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(8.0),
+        //     child: Column(
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         Text(
+        //           (widget.group.name ?? ''),
+        //           maxLines: 1,
+        //           overflow: TextOverflow.ellipsis,
+        //           style: theme.textTheme.headlineSmall,
+        //         ),
+        //         Expanded(
+        //             child: BlocSelector<GroupDetailBloc, GroupDetailState, List<NoteEntity>?>(
+        //           selector: (state) => state.notes,
+        //           builder: (context, notes) {
+        //             if (!notes.isNotNullAndNotEmpty) {
+        //               return Text('');
+        //             }
+        //
+        //             return ListView.separated(
+        //               itemBuilder: (context, index) {
+        //                 final item = notes[index];
+        //
+        //                 return Text(item.description ?? '');
+        //               },
+        //               separatorBuilder: (context, index) => const SizedBox(height: 4),
+        //               itemCount: notes!.length,
+        //             );
+        //           },
+        //         ))
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }

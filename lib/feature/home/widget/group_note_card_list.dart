@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/feature/home/bloc/group_bloc.dart';
+import 'package:note_app/feature/home/presentation/add_group_note_page.dart';
 
 import 'package:note_app/feature/home/widget/note_group_card.dart';
+import 'package:note_app/feature/home/widget/note_group_list_widget.dart';
 
 class GroupNoteCardList extends StatefulWidget {
   const GroupNoteCardList({
@@ -20,10 +22,6 @@ class _GroupNoteCardListState extends State<GroupNoteCardList> {
     return BlocSelector<ListNoteGroupCubit, ListNoteGroupState, List<NoteGroupEntity>?>(
       selector: (state) => state.groups,
       builder: (context, groups) {
-        if (groups?.isEmpty ?? true) {
-          return const Text('empty');
-        }
-
         return GridView.builder(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -32,11 +30,15 @@ class _GroupNoteCardListState extends State<GroupNoteCardList> {
             mainAxisSpacing: 4,
           ),
           itemBuilder: (context, index) {
+            if (index == 0) {
+              return const AddNoteGroupWidget();
+            }
+
             return NoteGroupCard(
-              group: groups![index],
+              group: groups![index - 1],
             );
           },
-          itemCount: groups?.length ?? 0,
+          itemCount: (groups?.length ?? 0) + 1,
         );
       },
     );

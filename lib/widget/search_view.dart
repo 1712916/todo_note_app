@@ -13,17 +13,14 @@ class SearchView extends StatelessWidget {
       onTap: () {
         AppNavigator.to(GetSearchPage());
       },
-      child: AbsorbPointer(
+      child: const AbsorbPointer(
         absorbing: true,
         child: Hero(
           tag: 'search_view',
           child: SearchBar(
-            padding: const MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
-            leading: const Icon(Icons.search),
-            onTap: () {
-              print('LOL');
-            },
-            hintText: 'Search notes',
+            padding: MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
+            leading: Icon(Icons.search),
+            hintText: 'Search notes...',
           ),
         ),
       ),
