@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/feature/home/bloc/crud_note_bloc.dart';
+import 'package:note_app/feature/home/bloc/group_bloc.dart';
 import 'package:note_app/feature/home/presentation/calendar_page.dart';
 import 'package:note_app/util/list_util.dart';
 import 'package:share_plus/share_plus.dart';
@@ -50,15 +51,19 @@ class NoteCard extends StatelessWidget {
   const NoteCard({
     super.key,
     required this.note,
+    this.onTap,
     this.showDelete = true,
     this.showCheckDone = true,
-    this.onTap,
+    this.showGroup = true,
+    this.isReadOnly = false,
   });
 
   final NoteEntity note;
+  final VoidCallback? onTap;
   final bool showDelete;
   final bool showCheckDone;
-  final VoidCallback? onTap;
+  final bool showGroup;
+  final bool isReadOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +83,39 @@ class NoteCard extends StatelessWidget {
               },
             )
           : null,
-      title: Text(
-        note.description ?? '',
-        style: theme.textTheme.titleLarge,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            note.description ?? '',
+            style: theme.textTheme.titleLarge,
+          ),
+          if (showGroup)
+
+            ///Loading note group information
+            FutureBuilder<NoteGroupEntity?>(
+              future: Future.sync(
+                () {
+                  if (note.groupId != null) {
+                    return context.read<ListNoteGroupCubit>().read(note.groupId!);
+                  }
+
+                  return null;
+                },
+              ),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data?.name != null) {
+                    return Chip(
+                      label: Text('${snapshot.data!.name}'),
+                      padding: const EdgeInsets.all(4),
+                    );
+                  }
+                }
+                return const SizedBox();
+              },
+            ),
+        ],
       ),
       subtitle: !isShowSubtitle
           ? null
@@ -89,7 +124,7 @@ class NoteCard extends StatelessWidget {
                 if (note.date != null)
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.date_range_outlined,
                         size: 14,
                       ),
@@ -100,7 +135,7 @@ class NoteCard extends StatelessWidget {
                 if (note.attachments.isNotNullAndNotEmpty)
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.attach_file_rounded,
                         size: 14,
                       ),
@@ -110,23 +145,32 @@ class NoteCard extends StatelessWidget {
               ],
             ),
       contentPadding: EdgeInsets.zero,
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-              onPressed: () {
-                // Share.share(note.getShareData(widget.group));
-              },
-              icon: Icon(Icons.share)),
-          if (showDelete)
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                context.read<CrudNoteBloc>().delete(note);
-              },
-            )
-        ],
-      ),
+      trailing: isReadOnly
+          ? const SizedBox()
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                    onPressed: () async {
+                      //get group information to share data
+                      NoteGroupEntity? group;
+
+                      if (note.groupId != null) {
+                        group = await context.read<ListNoteGroupCubit>().read(note.groupId!);
+                      }
+
+                      Share.share(note.getShareData(group));
+                    },
+                    icon: const Icon(Icons.share)),
+                if (showDelete)
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      context.read<CrudNoteBloc>().delete(note);
+                    },
+                  )
+              ],
+            ),
     );
   }
 }

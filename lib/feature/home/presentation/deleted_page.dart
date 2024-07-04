@@ -32,7 +32,7 @@ class _DeletedPageState extends BasePageState<DeletedPage> {
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text('History'),
+      title: const Text('History'),
     );
   }
 
@@ -42,19 +42,42 @@ class _DeletedPageState extends BasePageState<DeletedPage> {
       selector: (state) => state.notes,
       builder: (context, notes) {
         if (!notes.isNotNullAndNotEmpty) {
-          return Text('empty notes');
+          return Container(
+            height: 200,
+            alignment: Alignment.center,
+            child: Text(
+              'Have no data',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Theme.of(context).hintColor,
+                  ),
+            ),
+          );
         }
 
         return ListView.separated(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           itemBuilder: (context, index) {
             final item = notes[index];
 
-            return NoteCard(
-              note: item,
+            return Row(
+              children: [
+                Expanded(
+                  child: NoteCard(
+                    note: item,
+                    showGroup: true,
+                    isReadOnly: true,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    deletedListBloc.restore(item);
+                  },
+                  icon: Icon(Icons.restore),
+                ),
+              ],
             );
           },
-          separatorBuilder: (context, index) => const SizedBox(height: 4),
+          separatorBuilder: (context, index) => const Divider(height: 0),
           itemCount: notes!.length,
         );
       },

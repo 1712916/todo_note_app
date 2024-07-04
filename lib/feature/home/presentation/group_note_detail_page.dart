@@ -75,36 +75,43 @@ class _GroupNoteDetailPageState extends BasePageState<GroupNoteDetailPage> {
   Widget buildBody(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocSelector<GroupDetailBloc, GroupDetailState, List<NoteEntity>?>(
-      selector: (state) => state.notes,
-      builder: (context, notes) {
-        if (!notes.isNotNullAndNotEmpty) {
-          return GestureDetector(
-            onTap: () {
-              addNewNote();
-            },
-            child: Center(
-              child: Icon(
-                Icons.add,
-                size: 200,
-                color: theme.hintColor,
-              ),
-            ),
-          );
-        }
+    return BlocSelector<GroupDetailBloc, GroupDetailState, bool>(
+      selector: (state) => state.isDeleteMode ?? false,
+      builder: (context, showDelete) {
+        return BlocSelector<GroupDetailBloc, GroupDetailState, List<NoteEntity>?>(
+          selector: (state) => state.notes?.reversed.toList(),
+          builder: (context, notes) {
+            if (!notes.isNotNullAndNotEmpty) {
+              return GestureDetector(
+                onTap: () {
+                  addNewNote();
+                },
+                child: Center(
+                  child: Icon(
+                    Icons.add,
+                    size: 200,
+                    color: theme.hintColor,
+                  ),
+                ),
+              );
+            }
 
-        return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 160),
-          itemBuilder: (context, index) {
-            final item = notes[index];
+            return ListView.separated(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 160),
+              itemBuilder: (context, index) {
+                final item = notes[index];
 
-            return NoteCard(
-              note: item,
-              onTap: () => editNote(item),
+                return NoteCard(
+                  note: item,
+                  onTap: () => editNote(item),
+                  showDelete: showDelete,
+                  showGroup: false,
+                );
+              },
+              separatorBuilder: (context, index) => const Divider(height: 0),
+              itemCount: notes!.length,
             );
           },
-          separatorBuilder: (context, index) => const Divider(height: 0),
-          itemCount: notes!.length,
         );
       },
     );

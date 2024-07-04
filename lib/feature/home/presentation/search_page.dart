@@ -94,11 +94,11 @@ class _SearchPageState extends BasePageState<SearchPage> {
               selector: (state) => state.notes,
               builder: (context, notes) {
                 if (textEditingController.text.isEmpty) {
-                  return Center(child: Text('Enter keywords...'));
+                  return const Center(child: Text('Enter keywords...'));
                 }
 
                 if (notes?.isEmpty ?? false) {
-                  return Center(
+                  return const Center(
                     child: Text('Find not found'),
                   );
                 }
@@ -109,6 +109,7 @@ class _SearchPageState extends BasePageState<SearchPage> {
                     final note = notes[index];
                     return NoteCard(
                       note: note,
+                      showGroup: true,
                       showDelete: false,
                       showCheckDone: false,
                     );

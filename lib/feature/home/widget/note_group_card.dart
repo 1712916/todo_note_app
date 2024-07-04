@@ -57,14 +57,21 @@ class _NoteGroupCardState extends State<NoteGroupCard> {
 
                 return Column(
                   children: [
-                    Text(
-                      (widget.group.name ?? ''),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.headlineLarge,
+                    Badge(
+                      label: Text('${notes?.length}'),
+                      alignment: Alignment.bottomRight,
+                      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
+                      child: Text(
+                        (widget.group.name ?? ''),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.headlineLarge,
+                      ),
                     ),
                     Expanded(
                       child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           final item = notes[index];
 

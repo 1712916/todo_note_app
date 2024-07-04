@@ -31,6 +31,7 @@ class _GroupNoteCardListState extends State<GroupNoteCardList> {
           ),
           itemBuilder: (context, index) {
             if (index == 0) {
+              ///Show card to create new group
               return const AddNoteGroupWidget();
             }
 

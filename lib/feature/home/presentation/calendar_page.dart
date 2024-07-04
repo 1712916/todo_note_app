@@ -6,6 +6,7 @@ import 'package:note_app/base_presentation/page/base_page.dart';
 import 'package:note_app/data/entity/note_entity.dart';
 import 'package:note_app/data/observer_data/note_observer_data.dart';
 import 'package:note_app/data/observer_data/note_observer_data_impl.dart';
+import 'package:note_app/feature/home/widget/note_check_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 extension DateString on DateTime {
@@ -60,6 +61,10 @@ class _CalendarPageState extends BasePageState<CalendarPage> {
             _focusedDay = focusedDay;
           },
         ),
+        Text(
+          'Selected date: ' + _selectedDay.dateString(),
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
         Expanded(
           child: _NoteListByDate(
             key: ValueKey(_selectedDay.dateString()),
@@ -104,13 +109,22 @@ class _NoteListByDateState extends State<_NoteListByDate> {
 
   @override
   Widget build(BuildContext context) {
+    if (notes.isEmpty) {
+      return Text(
+        'Have no note',
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).hintColor,
+            ),
+      );
+    }
+
     return ListView.separated(
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(notes[index].description ?? ''),
+        return NoteCard(
+          note: notes[index],
         );
       },
-      separatorBuilder: (context, index) => const SizedBox(),
+      separatorBuilder: (context, index) => const Divider(height: 0),
       itemCount: notes.length,
     );
   }

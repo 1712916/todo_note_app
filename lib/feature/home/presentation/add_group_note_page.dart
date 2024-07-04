@@ -6,6 +6,7 @@ import 'package:note_app/util/theme_util.dart';
 import 'package:note_app/widget/custom_text_field.dart';
 import 'package:note_app/widget/show_bottom_sheet.dart';
 
+///[AddGroupNotePage] this widget is a view to create new group information
 class AddGroupNotePage extends StatefulWidget with ShowBottomSheet<String> {
   const AddGroupNotePage({Key? key}) : super(key: key);
 
