@@ -48,25 +48,21 @@ class _NoteGroupCardState extends State<NoteGroupCard> {
                   return Center(
                     child: Text(
                       (widget.group.name ?? ''),
-                      maxLines: 1,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.displayMedium,
+                      style: theme.textTheme.displaySmall,
                     ),
                   );
                 }
 
                 return Column(
                   children: [
-                    Badge(
-                      label: Text('${notes?.length}'),
-                      alignment: Alignment.bottomRight,
-                      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-                      child: Text(
-                        (widget.group.name ?? ''),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.headlineLarge,
-                      ),
+                    Text(
+                      (widget.group.name ?? ''),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.headlineLarge,
                     ),
                     Expanded(
                       child: ListView.separated(

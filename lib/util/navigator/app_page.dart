@@ -4,6 +4,7 @@ import 'package:note_app/feature/home/presentation/calendar_page.dart';
 import 'package:note_app/feature/home/presentation/deleted_page.dart';
 import 'package:note_app/feature/home/presentation/group_note_detail_page.dart';
 import 'package:note_app/feature/home/presentation/home_page.dart';
+import 'package:note_app/feature/home/presentation/listing_note_group_page.dart';
 import 'package:note_app/feature/home/presentation/search_page.dart';
 
 sealed class AppPage {
@@ -58,5 +59,14 @@ class GetCalendarPage extends AppPage {
   @override
   Widget? getPage(Object? arguments) {
     return const CalendarPage();
+  }
+}
+
+class GetListingNoteGroupPage extends AppPage {
+  GetListingNoteGroupPage() : super('/group-note/listing');
+
+  @override
+  Widget? getPage(Object? arguments) {
+    return const ListingNoteGroupPage();
   }
 }
