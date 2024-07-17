@@ -1,16 +1,28 @@
-# note_app
+# Todo-Note App
+---
+Todo note app with local storage.
 
-A new Flutter project.
+### Feature
+- Create note by group note
+- Note detail:
+  -- Description
+  -- Date
+  -- File attachment
+- Other: Check Done, Delete/Restore, Search,Share
 
-## Getting Started
+### Library & Tech Stack
+- Isar [local database]: easy to use, easy to config, strong in query, support listen when have data changed.
+- Flutter_bloc [state management]: this is a powerful library, but for small projects like this one it doesn't show much of its power and seems unnecessary.
+- Observable: use to separate logic crud, independent from any query execute.
 
-This project is a starting point for a Flutter application.
+### Screenshot
+| | | | |
+|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+|![Image](/screenshot/home.png?raw=true)|![Image](/screenshot/add_group_note.png?raw=true)|![Image](/screenshot/add_note.png?raw=true)|![Image](/screenshot/calendar.png?raw=true)|
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Running App
+1. clone
+2. flutter pub get
+3. flutter pub run build_runner build
+4. flutter run lib/main.dart
